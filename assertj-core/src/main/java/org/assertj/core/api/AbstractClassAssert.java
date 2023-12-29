@@ -34,15 +34,11 @@ import static org.assertj.core.error.ShouldBeSealed.shouldNotBeSealed;
 import static org.assertj.core.error.ShouldHaveNoPackage.shouldHaveNoPackage;
 import static org.assertj.core.error.ShouldHaveNoSuperclass.shouldHaveNoSuperclass;
 import static org.assertj.core.error.ShouldHavePackage.shouldHavePackage;
-import static org.assertj.core.error.ShouldHavePermittedSubclasses.shouldHaveNoPermittedSubclasses;
-import static org.assertj.core.error.ShouldHavePermittedSubclasses.shouldHavePermittedSubclasses;
 import static org.assertj.core.error.ShouldHaveRecordComponents.shouldHaveRecordComponents;
 import static org.assertj.core.error.ShouldHaveSuperclass.shouldHaveSuperclass;
 import static org.assertj.core.error.ShouldNotBeNull.shouldNotBeNull;
 import static org.assertj.core.error.ShouldNotBePrimitive.shouldNotBePrimitive;
 import static org.assertj.core.util.Arrays.array;
-import static org.assertj.core.util.Arrays.isArrayEmpty;
-import static org.assertj.core.util.Arrays.isNullOrEmpty;
 import static org.assertj.core.util.Sets.newLinkedHashSet;
 
 import java.lang.annotation.Annotation;
@@ -52,7 +48,6 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.assertj.core.internal.Classes;
-import org.assertj.core.util.Arrays;
 
 /**
  * Base class for all implementations of assertions for {@link Class}es.
@@ -1171,39 +1166,15 @@ public abstract class AbstractClassAssert<SELF extends AbstractClassAssert<SELF>
     }
   }
 
-  public SELF hasPermittedSubclasses(Class<?>... classes) {
-    isNotNull();
-    assertHasPermittedSubclasses(classes);
+  // todo javadoc
+  public SELF hasPermittedSubclasses(Class<?>... permittedSubclasses) {
+    classes.assertContainsPermittedSubclasses(info, actual, permittedSubclasses);
     return myself;
-  }
-
-  private void assertHasPermittedSubclasses(Class<?>[] classes) {
-    Class<?>[] permittedSubclasses = getPermittedSubclasses(actual);
-    // TODO -> see Classes class
-    // if (!hasPermittedSubclasses(actual)) throw assertionError(shouldHavePermittedSubclasses(actual));
   }
 
   public SELF hasNoPermittedSubclasses() {
-    isNotNull();
-    assertHasNoPermittedSubclasses();
+    classes.assertHasNoPermittedSubclasses(info, actual);
     return myself;
-  }
-
-  private void assertHasNoPermittedSubclasses() {
-    if (!isArrayEmpty(getPermittedSubclasses(actual)))
-      throw assertionError(shouldHaveNoPermittedSubclasses(actual));
-  }
-
-  private static Class<?>[] getPermittedSubclasses(Class<?> actual) {
-    try {
-      Method isSealed = Class.class.getMethod("getPermittedSubclasses");
-      Class<?>[] permittedSubclasses = (Class<?>[]) isSealed.invoke(actual);
-      return permittedSubclasses == null ? array() : permittedSubclasses;
-    } catch (NoSuchMethodException e) {
-      return new Class<?>[0];
-    } catch (ReflectiveOperationException e) {
-      throw new IllegalStateException(e);
-    }
   }
 
   /**

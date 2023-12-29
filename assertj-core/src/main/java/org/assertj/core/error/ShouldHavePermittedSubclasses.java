@@ -12,33 +12,54 @@
  */
 package org.assertj.core.error;
 
+import java.util.Collection;
+
 /**
- * Creates an error message indicating that an assertion that verifies that a class has (or has not) permitted subclasses.
+ * Creates an error message indicating that an assertion that verifies that a class has permitted subclasses.
  */
 public class ShouldHavePermittedSubclasses extends BasicErrorMessageFactory {
 
+  // todo remove
   /**
    * Creates a new <code>{@link ShouldHavePermittedSubclasses}</code>.
    *
    * @param actual the actual value in the failed assertion.
    * @return the created {@code ErrorMessageFactory}.
    */
-  public static ErrorMessageFactory shouldHavePermittedSubclasses(Class<?> actual) {
-    return new ShouldHavePermittedSubclasses(actual, true);
+  private static ErrorMessageFactory shouldHavePermittedSubclasses(Class<?> actual) {
+    return null;
   }
 
+  // todo javadoc
+  /**
+   * Creates a new <code>{@link ShouldHaveAnnotations}</code>.
+   *
+   * @param actual the actual value in the failed assertion.
+   * @param expected expected annotations for this class
+   * @param missing missing annotations for this class
+   * @return the created {@code ErrorMessageFactory}.
+   */
+  public static ErrorMessageFactory shouldHavePermittedSubclasses(Class<?> actual,
+                                                                  Collection<Class<?>> expected,
+                                                                  Collection<Class<?>> missing) {
+    return new ShouldHavePermittedSubclasses(actual, expected, missing);
+  }
+
+  // todo remove method, use javadoc
   /**
    * Creates a new <code>{@link ShouldHavePermittedSubclasses}</code>.
    *
    * @param actual the actual value in the failed assertion.
    * @return the created {@code ErrorMessageFactory}.
    */
-  public static ErrorMessageFactory shouldHaveNoPermittedSubclasses(Class<?> actual) {
-    return new ShouldHavePermittedSubclasses(actual, false);
+  private static ErrorMessageFactory shouldHaveNoPermittedSubclasses(Class<?> actual) {
+    return null;
+    // return new ShouldHavePermittedSubclasses(actual, false);
   }
 
-  private ShouldHavePermittedSubclasses(Class<?> actual, boolean toHaveOrNotToHave) {
-    super("%nExpecting%n  %s%n" + "to have " + (toHaveOrNotToHave ? "" : "no ") + "permitted subclasses", actual);
+  private ShouldHavePermittedSubclasses(Class<?> actual, Collection<Class<?>> expected, Collection<Class<?>> missing) {
+    super("%nExpecting%n  %s%nto have permitted subclasses:%n  %s%n" +
+          "but the following permitted subclasses were not found:%n  %s",
+          actual, expected, missing);
   }
-
 }
